@@ -1,0 +1,20 @@
+name: Deploy to SmarterASP
+
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: FTP Deploy to SmarterASP
+      uses: SamKirkland/FTP-Deploy-Action@v4
+      with:
+        server: win1022.site4now.net
+        username: levyada-001
+        password: ${{ secrets.SMARTERASP_PASSWORD }}
+        local-dir: ./
