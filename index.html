@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta name="monetag" content="eca2f0c25f587bb76221250d915770b5">
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>VitalPulse — Health, Fitness & Wellness</title>
@@ -111,11 +110,82 @@ footer a:hover{color:var(--lime)}
 .feature{animation:up 0.65s 0.1s ease both}
 </style>
 
+<!-- ── PROTECTION LAYER 1: Force all <a> links to open new tab ── -->
+<base target="_blank"/>
+
+<!-- ── PROTECTION LAYER 2: Redirect interceptor — runs before any ad script ── -->
+<script>
+(function(){
+  // Override window.open so any popup/redirect ad opens in new tab, not same window
+  var _open = window.open.bind(window);
+  window.open = function(url, name, features){
+    return _open(url, '_blank', features);
+  };
+
+  // Override location.assign and location.replace to open in new tab instead
+  try {
+    var _assign  = location.assign.bind(location);
+    var _replace = location.replace.bind(location);
+    Location.prototype.assign  = function(url){ _open(url,'_blank'); };
+    Location.prototype.replace = function(url){ _open(url,'_blank'); };
+  } catch(e){}
+
+  // Catch any click on an <a> that still has no target and force _blank
+  document.addEventListener('click', function(e){
+    var el = e.target.closest('a[href]');
+    if(el && el.target !== '_blank'){
+      el.target = '_blank';
+      el.rel    = 'noopener noreferrer';
+    }
+  }, true);
+
+  // beforeunload guard — if a redirect somehow fires, re-inject page assets
+  window.addEventListener('beforeunload', function(e){
+    // Re-trigger image loads so resources keep coming even if navigation starts
+    document.querySelectorAll('img[data-src]').forEach(function(i){
+      i.src = i.dataset.src;
+    });
+  });
+})();
+</script>
+
 <!-- AD 1: Popunder — before closing </head> -->
 <script src="https://overestimatecapricornspittle.com/5e/e3/fe/5ee3feb5b03a1e7af0862d62df49efaf.js"></script>
 </head>
 <body>
 
+<!-- ── SHIELD: blocks all clicks for 5s so ads fully load first ── -->
+<div id="ad-shield" style="
+  position:fixed;inset:0;z-index:999999;
+  background:transparent;cursor:default;
+  display:flex;align-items:center;justify-content:center;
+" onclick="return false;" oncontextmenu="return false;">
+  <div style="
+    background:rgba(26,58,42,0.92);color:#b8e04a;
+    font-family:sans-serif;font-size:1rem;font-weight:700;
+    padding:0.9rem 2rem;border-radius:3rem;
+    letter-spacing:0.05em;user-select:none;
+    box-shadow:0 4px 30px rgba(0,0,0,0.4);
+  " id="shield-label">Loading ads… 5</div>
+</div>
+<script>
+(function(){
+  var s = document.getElementById('ad-shield');
+  var l = document.getElementById('shield-label');
+  var n = 5;
+  var t = setInterval(function(){
+    n--;
+    if(n <= 0){
+      clearInterval(t);
+      s.style.transition = 'opacity 0.4s';
+      s.style.opacity = '0';
+      setTimeout(function(){ s.remove(); }, 400);
+    } else {
+      l.textContent = 'Loading ads\u2026 ' + n;
+    }
+  }, 1000);
+})();
+</script>
 
 <nav>
   <div class="nav-logo">Vital<span>Pulse</span></div>
@@ -128,7 +198,6 @@ footer a:hover{color:var(--lime)}
     <li><a href="#" class="nav-cta">Newsletter</a></li>
   </ul>
 </nav>
-
 
 <div class="hero">
   <div class="hero-content">
@@ -147,7 +216,7 @@ footer a:hover{color:var(--lime)}
 
 <!-- AD 2: Smartlink — standard hyperlink -->
 <div class="ad-wrap">
-  <a href="https://overestimatecapricornspittle.com/wndu49mk?key=b6326e7b66f2bb88fd1369e297eb60c2">ClickSponsored</a>
+  <a href="https://overestimatecapricornspittle.com/wndu49mk?key=b6326e7b66f2bb88fd1369e297eb60c2">Sponsored</a>
 </div>
 
 <!-- AD 10: Banner 728x90 — top of page body -->
